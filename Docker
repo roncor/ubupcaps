@@ -1,0 +1,25 @@
+# Use Python 3.10 slim image
+FROM python:3.10-slim
+
+# Install system dependencies including Wireshark/tshark
+RUN apt-get update && apt-get install -y \
+    libpcap-dev \
+    gcc \
+    tshark \
+    && rm -rf /var/lib/apt/lists/*
+
+# Set working directory
+WORKDIR /app
+
+# Copy requirements and install Python packages
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
+
+# Copy the capture script
+COPY network_capture_jsonb.py .
+
+# Create output directory
+RUN mkdir -p /app/output
+
+# Run the script
+CMD ["python", "network_capture_jsonb.py"]
