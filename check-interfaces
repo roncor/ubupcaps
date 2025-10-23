@@ -1,0 +1,30 @@
+#!/bin/bash
+
+# Script to check available network interfaces
+echo "Available network interfaces:"
+echo "============================="
+
+# Check if we're in Docker or host system
+if [ -f /.dockerenv ]; then
+    echo "(Running inside Docker container)"
+else
+    echo "(Running on host system)"
+fi
+
+echo ""
+echo "Active network interfaces:"
+ip link show | grep -E '^[0-9]+:' | awk -F': ' '{print $2}' | grep -v lo
+
+echo ""
+echo "Interface details:"
+ip addr show | grep -E '^[0-9]+:|inet ' | grep -v '127.0.0.1'
+
+echo ""
+echo "Most common interface names:"
+echo "- eth0 (Ethernet)"
+echo "- wlan0 (WiFi)" 
+echo "- enp0s3 (Modern Ethernet naming)"
+echo "- wlp2s0 (Modern WiFi naming)"
+
+echo ""
+echo "To use a specific interface, update NETWORK_INTERFACE in docker-compose.yml"
