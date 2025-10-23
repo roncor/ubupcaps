@@ -1,0 +1,3 @@
+nfstream
+pandas
+numpy
