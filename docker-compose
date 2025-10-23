@@ -1,0 +1,24 @@
+services:
+  network-capture:
+    build: .
+    container_name: network-capture
+    network_mode: host
+    privileged: true
+    volumes:
+      - ./output:/app/output
+    environment:
+      - NETWORK_INTERFACE=wlp1s0
+      - OUTPUT_FILE=/app/output/traffic_flows.jsonb
+      - BATCH_SIZE=25          # Reduced for more real-time writes
+      - VERBOSE=true
+      # Real-time optimization flags
+      - REAL_TIME_MODE=true    # Enable real-time optimizations
+      # Wireshark Integration (NEW)
+      - USE_WIRESHARK=true     # Enable Wireshark/tshark integration
+      - CAPTURE_MODE=network   # 'interface' or 'network' for broader capture
+      - WIRESHARK_FILTER=not arp and not icmp  # Optional: filter out noise
+      # PCAP Saving (NEW)
+      - SAVE_PCAP=true         # Save raw PCAP files alongside JSONB
+      - PCAP_ROTATION_SIZE=100 # PCAP file size in MB before rotation
+      - PCAP_RETENTION_COUNT=10 # Number of PCAP files to keep
+    restart: unless-stopped
